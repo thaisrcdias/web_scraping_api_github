@@ -2,6 +2,7 @@ import requests
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import regexp_replace, date_format, to_date
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
+import logging
 
 GITHUB_API_TOKEN = 'ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' # meu token
 
@@ -20,10 +21,14 @@ def get_followers(username: str) -> dict:
         dict: A dictionary containing the response from the API call.
 
     """
-    url = f'https://api.github.com/users/{username}/followers'
-    response = requests.get(url, headers=headers)
+    try:
+        url = f'https://api.github.com/users/{username}/followers'
+        response = requests.get(url, headers=headers)
 
-    return response.json()
+        return response.json()
+    except Exception as e:
+      logging.info(f"An error occurred while getting followers: {e}")
+      raise e
 
 def get_user_details(username: str) -> dict:
     """
@@ -35,10 +40,14 @@ def get_user_details(username: str) -> dict:
     Returns:
         dict: A dictionary containing the user details.
     """
-    url = f'https://api.github.com/users/{username}'
-    response = requests.get(url, headers=headers)
+    try:
+        url = f'https://api.github.com/users/{username}'
+        response = requests.get(url, headers=headers)
 
-    return response.json()
+        return response.json()
+    except Exception as e:
+      logging.info(f"An error occurred while getting user details: {e}")
+      raise e
 
 if __name__ == "__main__":
     username = 'cvscarlos'
